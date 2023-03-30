@@ -10,11 +10,19 @@ class EventoCreateSerializer(serializers.ModelSerializer):
 
         model = Evento
         fields = [
-            'idEvento',
             'Administrativo_idAdministrativo',
             'nombre_evento',
             'descripcion',
             'fecha_inicio',
             'fecha_final',
-            'estado'
+        ]
+
+class EventoCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Evento
+        fields = [
+            'Evento_idEvento',
+            'Programa_idPrograma',
         ]
