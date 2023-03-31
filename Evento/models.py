@@ -6,9 +6,9 @@ from django.utils.translation import gettext as _
 
 class Programa(models.Model):
 
-    idPrograma = models.IntegerField(primary_key=True)
+    idPrograma = models.AutoField(primary_key=True)
     nombre_programa = models.CharField(max_length=50)
-    codigo_programa = models.CharField(max_length=15)
+    codigo_programa = models.CharField(max_length=15, unique=True)
 
     class Meta:
 
@@ -21,7 +21,7 @@ class Programa(models.Model):
 
 class Administrativo(models.Model):
 
-    idAdministrativo = models.IntegerField(primary_key=True)
+    idAdministrativo = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=80)
     apellido = models.CharField(max_length=80)
     cargo = models.CharField(max_length=80)
@@ -44,14 +44,14 @@ class Evento(models.Model):
         DENEGADO = 'No Aprobado'
         PROGRESO = 'En proceso'
 
-    idEvento = models.IntegerField(primary_key=True)
-    Administrativo_idAdministrativo = models.ForeignKey(Administrativo, on_delete=models.CASCADE)
+    idEvento = models.AutoField(primary_key=True)
+    Administrativo_idAdministrativo = models.ForeignKey(Administrativo, on_delete=models.CASCADE, db_column='Administrativo_idAdministrativo')
     nombre_evento = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=150)
     fecha_inicio = models.DateTimeField()
     fecha_final = models.DateTimeField()
     estado = models.CharField(max_length=15, choices=EstadoEvento.choices, default=EstadoEvento.PROGRESO)
-    correccion = models.CharField(max_length=150, null=True, blank=False)
+    correccion = models.CharField(max_length=150, null=True, blank=True)
 
     class Meta:
 
@@ -60,8 +60,9 @@ class Evento(models.Model):
 
 class ProgramaEvento(models.Model):
 
-    Evento_idEvento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    Programa_idPrograma = models.ForeignKey(Programa, on_delete=models.CASCADE)
+    id = models.AutoField(primary_key=True)
+    Evento_idEvento = models.ForeignKey(Evento, on_delete=models.CASCADE, db_column='Evento_idEvento')
+    Programa_idPrograma = models.ForeignKey(Programa, on_delete=models.CASCADE, db_column='Programa_idPrograma')
 
     class Meta:
 
