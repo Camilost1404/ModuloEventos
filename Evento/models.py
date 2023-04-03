@@ -4,14 +4,24 @@ from django.utils.translation import gettext as _
 # Create your models here.
 
 class Administrativo(models.Model):
+    idAdministrativo = models.AutoField(primary_key=True)
     codigo = models.IntegerField()
     nombre = models.CharField(max_length=80)
     apellido = models.CharField(max_length=80)
     cargo = models.CharField(max_length=80)
 
+    class Meta:
+
+        # Para no hacer cambios en los atributos a la base de datos
+        managed = False
+
+        # Para cambiar el nombre por defecto de la tabla (Poner el nombre que hay establecido en la BD)
+        db_table = "administrativo"
+
+
 class Programa(models.Model):
 
-    idPrograma = models.IntegerField(primary_key=True)
+    idPrograma = models.AutoField(primary_key=True)
     nombre_programa = models.CharField(max_length=50)
     codigo_programa = models.CharField(max_length=15)
 
@@ -34,8 +44,8 @@ class Evento(models.Model):
         DENEGADO = 'No Aprobado'
         PROGRESO = 'En proceso'
 
-    idEvento = models.IntegerField(primary_key=True)
-    Administrativo_idAdministrativo = models.ForeignKey(Administrativo, on_delete=models.CASCADE)
+    idEvento = models.AutoField(primary_key=True)
+    Administrativo_idAdministrativo = models.ForeignKey(Administrativo, on_delete=models.CASCADE, db_column='Administrativo_idAdministrativo')
     nombre_evento = models.CharField(max_length=45)
     descripcion = models.CharField(max_length=150)
     fecha_inicio = models.DateTimeField()
