@@ -36,10 +36,11 @@ class EventoCreateSerializer(serializers.ModelSerializer):
         error_messages = {
             'nombre_evento': {
                 'required': 'El nombre del evento es requerido.',
-                'max_length': 'El nombre del evento no puede tener más de 255 caracteres.'
+                'max_length': 'El nombre del evento no puede tener más de 45 caracteres.'
             },
             'descripcion': {
-                'required': 'La descripción del evento es requerida.'
+                'required': 'La descripción del evento es requerida.',
+                'max_length': 'La descripción del evento no puede tener más de 150 caracteres.'
             },
             'fecha_inicio': {
                 'required': 'La fecha de inicio del evento es requerida.'
