@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Evento',
+    'Actividad',
     'rest_framework',
     'drf_yasg',
 ]
