@@ -10,3 +10,14 @@ class actividadView(APIView):
         serializer = ActividadViewSerializer(actividad, many =True)
         
         return Response(serializer.data)
+
+
+class actividadFilterEstado(APIView):
+
+    def get(self,request):
+
+        estado1 = request.query_params['estado1']
+        actividad = Actividad.objects.filter(estado=estado1)
+        serializer = ActividadViewSerializer(actividad, many = True)
+
+        return Response(serializer.data)
