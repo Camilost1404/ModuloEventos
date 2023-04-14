@@ -1,4 +1,5 @@
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
@@ -8,8 +9,6 @@ from Evento.models import Programa, ProgramaEvento, Evento
 
 # Importación de serializers
 from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer
-
-# Función para agregar los programas puestos por cada evento
 
 
 @transaction.atomic
@@ -68,60 +67,86 @@ class EventoCreateView(APIView):
 
 
 class EventoView(APIView):
-    http_method_names = ['get']
+
+    """
+    Vista para obtener todos los eventos.
+    """
 
     def get(self, request):
         eventos = Evento.objects.all()
         serializer = EventoViewSerializer(eventos, many=True)
-        print(eventos)
+
+        # Retornamos los eventos encontrados
         return Response(serializer.data)
 
 
 class EventoFilterEstado(APIView):
 
+    """
+    Vista para filtrar los eventos por estado.
+    """
+
     def get(self, request):
         try:
-            estado1 = request.query_params['estado1']
-            # print(estado1)
-            if estado1 != None:
-                # print(estado1)
-                eventos = Evento.objects.filter(estado=estado1)
+            # Obtenemos el parámetro "estado" enviado por query params
+            estado = request.query_params['estado']
+
+            if estado != None:
+                # Filtramos los eventos por el estado recibido
+                eventos = Evento.objects.filter(estado=estado)
                 serializer = EventoFilterSerializer(eventos, many=True)
+
         except:
+            # Si no se recibe el parámetro "estado" o hay algún error, se devuelven todos los eventos
             eventos = Evento.objects.all()
             serializer = EventoFilterSerializer(eventos, many=True)
+
+        # Retornamos la respuesta con los eventos filtrados o todos los eventos si no se recibió el parámetro
         return Response(serializer.data)
 
 
 class EventoFilterFecha(APIView):
+    """
+    Vista para filtrar eventos por mes de inicio.
+    """
 
     def get(self, request):
+        """
+        Método GET que recibe el parámetro 'mes' en los query params.
+        Retorna todos los eventos que tengan fecha de inicio en el mes indicado.
+        Si no se recibe el parámetro 'mes' o hay algún error, se devuelven todos los eventos.
+        """
         try:
+            # Se intenta obtener el valor del parámetro 'mes' de los query params.
             mes = request.query_params['mes']
-            # print(mes)
-            if mes != None:
-                # print(mes)
+
+            if mes:
+                # Si se recibe el valor del parámetro 'mes', se filtran los eventos por ese mes.
                 eventos = Evento.objects.filter(fecha_inicio__month=mes)
                 serializer = EventoFilterSerializer(eventos, many=True)
+
         except:
+            # Si no se recibe el parámetro 'mes' o hay algún error, se devuelven todos los eventos.
             eventos = Evento.objects.all()
-            # print('no sirve')
             serializer = EventoFilterSerializer(eventos, many=True)
+
+        # Se retorna la lista de eventos filtrados o no filtrados, serializados.
         return Response(serializer.data)
 
 
-class EventoFilterId(APIView):
+class EventoFilterId(RetrieveAPIView):
+    """
+    Vista para obtener un evento en particular por su ID.
+    """
 
-    def get(self, request):
-        try:
-            id = request.query_params['id']
-            # print(id)
-            if id != None:
-                # print(id)
-                eventos = Evento.objects.filter(idEvento=id)
-                serializer = EventoFilterSerializer(eventos, many=True)
-        except:
-            eventos = Evento.objects.all()
-            # print('no sirve')
-            serializer = EventoFilterSerializer(eventos, many=True)
+    queryset = Evento.objects.all()
+    serializer_class = EventoFilterSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Método GET que recibe el ID del evento a obtener.
+        Retorna el evento con el ID indicado, serializado.
+        """
+        evento = self.get_object()
+        serializer = self.get_serializer(evento)
         return Response(serializer.data)

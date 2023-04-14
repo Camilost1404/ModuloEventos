@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from Evento.models import Evento, Programa
+
+#Crear los serializadores
+
 # Serializador para el modelo Programa
 
 
@@ -32,34 +35,36 @@ class EventoCreateSerializer(serializers.ModelSerializer):
             'programas'
         ]
 
-        # Personalización de mensajes de error para cada campo
-        error_messages = {
-            'nombre_evento': {
-                'required': 'El nombre del evento es requerido.',
-                'max_length': 'El nombre del evento no puede tener más de 45 caracteres.'
-            },
-            'descripcion': {
-                'required': 'La descripción del evento es requerida.',
-                'max_length': 'La descripción del evento no puede tener más de 150 caracteres.'
-            },
-            'fecha_inicio': {
-                'required': 'La fecha de inicio del evento es requerida.'
-            },
-            'fecha_final': {
-                'required': 'La fecha final del evento es requerida.'
-            }
-        }
+# Serializador para ver un evento
 
 
 class EventoViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evento
-        fields = ['idEvento', 'Administrativo_idAdministrativo', 'nombre_evento',
-                'descripcion', 'fecha_inicio', 'fecha_final', 'estado', 'correccion']
+        fields = [
+            'idEvento',
+            'Administrativo_idAdministrativo',
+            'nombre_evento',
+            'descripcion',
+            'fecha_inicio',
+            'fecha_final',
+            'estado',
+            'correccion'
+        ]
+
+# Serializador para filtrar eventos
 
 
 class EventoFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evento
-        fields = ['idEvento', 'Administrativo_idAdministrativo', 'nombre_evento',
-                'descripcion', 'fecha_inicio', 'fecha_final', 'estado', 'correccion']
+        fields = [
+            'idEvento',
+            'Administrativo_idAdministrativo',
+            'nombre_evento',
+            'descripcion',
+            'fecha_inicio',
+            'fecha_final',
+            'estado',
+            'correccion'
+        ]
