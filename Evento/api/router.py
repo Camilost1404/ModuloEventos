@@ -1,7 +1,9 @@
 from django.urls import path
-from Evento.api.views import EventoCreateView
+from Evento.api.views import EventoView, EventoFilterEstado, EventoFilterId,EventoFilterFecha
 
 urlpatterns = [
-    ## Rutas
-    path('eventos/create', EventoCreateView.as_view()),
+    path('ver_evento/',EventoView.as_view()),
+    path('filtrar_evento_estado/',EventoFilterEstado.as_view()),
+    path('filtrar_evento_fecha/',EventoFilterFecha.as_view()),
+    path('filtrar_evento_id/', EventoFilterId.as_view()),
 ]
