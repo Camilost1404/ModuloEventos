@@ -1,10 +1,15 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from Actividad.api.serializer import ActividadViewSerializer
+from Actividad.api.serializers import ActividadViewSerializer
 from Actividad.models import Actividad
+from django.db import transaction
 
 
-class actividadView(APIView):
+@transaction.atomic
+def create_actividad_dia():
+    pass
+
+class ActividadView(APIView):
 
     def get(self, request):
         actividad = Actividad.objects.all()
@@ -13,7 +18,7 @@ class actividadView(APIView):
         return Response(serializer.data)
 
 
-class actividadFilterEstado(APIView):
+class ActividadFilterEstado(APIView):
 
     def get(self, request):
 
@@ -22,3 +27,9 @@ class actividadFilterEstado(APIView):
         serializer = ActividadViewSerializer(actividad, many=True)
 
         return Response(serializer.data)
+
+
+class ActividadCreateView(APIView):
+
+    def post(self, request):
+        pass
