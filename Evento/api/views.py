@@ -59,3 +59,20 @@ class EventoFilterId(APIView):
           # print('no sirve')
           serializer = EventoFilterSerializer(eventos,many = True)
         return Response(serializer.data)     
+    
+# class UserView(APIView):
+#     permission_classes=[IsAuthenticated]
+
+#     def get(self,request):
+#         serializer= UserSerializer(request.user)
+#         return Response(serializer.data)
+    
+#     def put(self,request):
+#         user = User.objects.get(id=request.user.id)
+#         serializer = UserUpdateSerializer(user,request.data)
+
+#         if serializer.is_valid(raise_exception=True):
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
