@@ -8,7 +8,7 @@ from django.db import transaction
 from Evento.models import Programa, ProgramaEvento, Evento
 
 # Importación de serializers
-from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer
+from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer
 
 
 @transaction.atomic
@@ -150,3 +150,17 @@ class EventoFilterId(RetrieveAPIView):
         evento = self.get_object()
         serializer = self.get_serializer(evento)
         return Response(serializer.data)
+
+
+class AsistenciaEventoView(APIView):
+
+    @transaction.atomic
+    def post(self, request):
+
+        serializer = AsistenciaEventoSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
