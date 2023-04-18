@@ -18,7 +18,7 @@ class Rol(models.Model):
 
 class Perfil(models.Model):
     idPerfil = models.AutoField(primary_key=True)
-    Rol_idRol = models.ForeignKey(Rol, on_delete=models.CASCADE)
+    Rol_idRol = models.ForeignKey(Rol, on_delete=models.CASCADE, db_column='Rol_idRol')
     usuario = models.CharField(max_length=80)
     correo = models.CharField(max_length=80)
     contraseña = models.CharField(max_length=45)
@@ -94,8 +94,8 @@ class Evento(models.Model):
 
 class Estudiante(models.Model):
     idEstudiante = models.AutoField(primary_key=True)
-    Perfil_idPerfil = models.ForeignKey(Perfil, on_delete=models.CASCADE)
-    Programa_idPrograma = models.ForeignKey(Programa, on_delete=models.CASCADE)
+    Perfil_idPerfil = models.ForeignKey(Perfil, on_delete=models.CASCADE, db_column='Perfil_idPerfil')
+    Programa_idPrograma = models.ForeignKey(Programa, on_delete=models.CASCADE, db_column='Programa_idPrograma')
     nombre = models.CharField(max_length=80)
     apellido = models.CharField(max_length=80)
     telefono = models.CharField(max_length=80)
@@ -111,8 +111,8 @@ class Estudiante(models.Model):
 
 class AsistenciaEvento(models.Model):
     id = models.AutoField(primary_key=True)
-    Evento_idEvento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    Estudiante_idEstudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    Evento_idEvento = models.ForeignKey(Evento, on_delete=models.CASCADE, db_column='Evento_idEvento')
+    Estudiante_idEstudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE, db_column='Estudiante_idEstudiante')
     horas_registradas = models.IntegerField()
     fecha = models.DateTimeField()
 
