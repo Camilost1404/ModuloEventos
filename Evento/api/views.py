@@ -18,6 +18,7 @@ def create_programa_evento(programa_data, evento):
     Recibe el código del programa y el objeto evento.
     """
 
+    print(programa_data)
     # Buscamos el programa en base al código recibido
     programa = Programa.objects.get(codigo_programa=programa_data)
 
@@ -42,9 +43,10 @@ class EventoCreateView(APIView):
 
             # Guardamos el objeto evento
             evento = serializer.save()
+            print(request.data)
 
             # Recorremos la lista de programas recibidos y creamos la relación con cada uno
-            for programa in request.data.getlist('programas', []):
+            for programa in request.data.get('programas', []):
                 create_programa_evento(programa, evento)
 
             # Obtenemos los programas asociados al evento creado
@@ -53,6 +55,7 @@ class EventoCreateView(APIView):
 
             # Serializamos los programas encontrados
             programa_serializer = ProgramaSerializer(programas, many=True)
+            
 
             # Serializamos el objeto evento creado junto con los programas asociados
             response_serializer = EventoCreateSerializer(evento)

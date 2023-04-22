@@ -22,7 +22,7 @@ class DiaSerializer(serializers.ModelSerializer):
 
 class ActividadCreateSerializer(serializers.ModelSerializer):
     # Incluye los programas relacionados con el evento
-    programas = DiaSerializer(many=True, read_only=True)
+    programacion = DiaSerializer(many=True, read_only=True)
 
     class Meta:
         model = Actividad
