@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer
+from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer, ActividadStateSerializer
 from Actividad.models import Actividad, Dia, ActividadDia
 from django.db import transaction
 
@@ -9,18 +9,18 @@ from django.db import transaction
 @transaction.atomic
 def create_actividad_dia(programacion, actividad):
     """
-    Función para crear la relación entre un evento y un programa.
-    Recibe el código del programa y el objeto evento.
+    Función para crear la relación entre una actividad y un dia.
+    Recibe el objeto actiivdad y un dict de programacion con (Id dia, fecha inicio y fecha fin)o.
     """
 
     dia, hora_inicio, hora_fin = programacion.values()
 
-    # Buscamos el programa en base al código recibido
+    # Buscamos el dia en base al código recibido
     dia_id = Dia.objects.get(idDia=dia)
 
     # print(dia_id)
 
-    # Creamos la relación entre el evento y el programa encontrado
+    # Creamos la relación entre el Actividad y el dia encontrado
     actividad_dia = ActividadDia(
         Actividad_idActividad=actividad, Dia_idDia=dia_id, hora_inicio=hora_inicio, hora_fin=hora_fin)
 
@@ -66,7 +66,7 @@ class ActividadCreateView(APIView):
 
             # print(request.data)
 
-            # Recorremos la lista de programas recibidos y creamos la relación con cada uno
+            # Recorremos la lista de programacion recibida y creamos la relación con cada uno
             for dia in request.data.get('programacion', []):
                 create_actividad_dia(dia, actividad)
 
@@ -74,16 +74,47 @@ class ActividadCreateView(APIView):
             dias = Dia.objects.filter(
                 actividaddia__Actividad_idActividad=actividad.idActividad)
 
-            # Serializamos los programas encontrados
+            # Serializamos los dias encontrados
             dia_serializer = DiaSerializer(dias, many=True)
 
-            # Serializamos el objeto evento creado junto con los programas asociados
+            # Serializamos el objeto actividad creado junto con los programas asociados
             response_serializer = ActividadCreateSerializer(actividad)
             response_data = response_serializer.data
             response_data['programacion'] = dia_serializer.data
 
-            # Retornamos la respuesta con el objeto evento creado y los programas asociados
+            # Retornamos la respuesta con el objeto actividad creada y los dias asociados
             return Response(response_data, status=status.HTTP_201_CREATED)
 
         # Retornamos error si no se pudo validar el serializer
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangeStateActividad(APIView):
+    """
+    Vista para actualizar el estado de una actividad
+    """
+
+    @transaction.atomic
+    def put(self, request, id):
+        # Obtenemos la actividad a actualizar
+        actividad = Actividad.objects.filter(idActividad=id).first()
+
+        # Si no se encuentra la actividad, se retorna un error 404
+        if not actividad:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Obtenemos el estado actual de la actividad
+        estado_actual = actividad.estado
+
+        # Cambiamos el estado actual de la actividad
+        estado_nuevo = int(not estado_actual)
+
+        # Creamos una instancia de ActividadStateSerializer para validar y guardar el nuevo estado de la actividad
+        serializer = ActividadStateSerializer(
+            actividad, data={'estado': estado_nuevo})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

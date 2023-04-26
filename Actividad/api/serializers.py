@@ -9,6 +9,12 @@ class ActividadViewSerializer(serializers.ModelSerializer):
         model = Actividad
         fields = '__all__'
 
+class ActividadStateSerializer(serializers.ModelSerializer):
+    class Meta:
+
+        model = Actividad
+        fields = ['estado']
+
 class DiaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dia

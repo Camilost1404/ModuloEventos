@@ -8,7 +8,7 @@ from django.db import transaction
 from Evento.models import Programa, ProgramaEvento, Evento
 
 # Importación de serializers
-from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer
+from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer, EventoStateSerializer
 
 
 @transaction.atomic
@@ -55,7 +55,6 @@ class EventoCreateView(APIView):
 
             # Serializamos los programas encontrados
             programa_serializer = ProgramaSerializer(programas, many=True)
-            
 
             # Serializamos el objeto evento creado junto con los programas asociados
             response_serializer = EventoCreateSerializer(evento)
@@ -165,5 +164,28 @@ class AsistenciaEventoView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangeStateEvento(APIView):
+
+    @transaction.atomic
+    def patch(self, request, id):
+
+        evento = Evento.objects.get(idEvento=id)
+
+        # Si no se encuentra la actividad, se retorna un error 404
+        if not evento:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        print(evento)
+
+        serializer = EventoStateSerializer(evento, data=request.data)
+
+        if (serializer.is_valid(raise_exception=True)):
+
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

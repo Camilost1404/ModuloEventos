@@ -121,3 +121,11 @@ class AsistenciaEventoSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class EventoStateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Evento
+        fields = ['estado']
