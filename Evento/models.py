@@ -83,7 +83,7 @@ class Evento(models.Model):
     fecha_inicio = models.DateTimeField()
     fecha_final = models.DateTimeField()
     estado = models.CharField(max_length=15, choices=EstadoEvento.choices, default=EstadoEvento.PROGRESO)
-    correccion = models.CharField(max_length=150, null=True, blank=False)
+    correccion = models.CharField(max_length=150, null=True, blank=False, db_column='correcion')
 
     class Meta:
 
