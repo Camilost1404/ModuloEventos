@@ -29,3 +29,6 @@ class actividadFilterLugar(APIView):
         lugar1 = request.query_params['lugar1']
         actividad = Actividad.objects.filter(lugar = lugar1)
         serializer = ActividadViewSerializer(actividad, many =True)    
+
+        return Response(serializer.data)
+          

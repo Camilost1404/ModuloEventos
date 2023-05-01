@@ -65,6 +65,7 @@ class Programa(models.Model):
         db_table = "programa"
 
 
+
 class Evento(models.Model):
 
     # Definición de los valores del atributo ENUM
@@ -123,3 +124,15 @@ class AsistenciaEvento(models.Model):
 
         # Para cambiar el nombre por defecto de la tabla (Poner el nombre que hay establecido en la BD)
         db_table = "asistenciaevento"
+
+class ProgramaEvento(models.Model):
+    evento_idevento = models.ForeignKey(Evento, on_delete= models.CASCADE, db_column='Evento_idEvento')
+    programa_idprograma = models.ForeignKey(Programa, on_delete= models.CASCADE, db_column='Programa_idPrograma')        
+
+    class Meta:
+
+        # Para no hacer cambios en los atributos a la base de datos
+        managed = False
+
+        # Para cambiar el nombre por defecto de la tabla (Poner el nombre que hay establecido en la BD)
+        db_table = "programaevento"

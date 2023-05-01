@@ -60,19 +60,18 @@ class EventoFilterId(APIView):
           serializer = EventoFilterSerializer(eventos,many = True)
         return Response(serializer.data)     
     
-# class UserView(APIView):
-#     permission_classes=[IsAuthenticated]
+class eliminarEvento(APIView):
 
-#     def get(self,request):
-#         serializer= UserSerializer(request.user)
-#         return Response(serializer.data)
-    
-#     def put(self,request):
-#         user = User.objects.get(id=request.user.id)
-#         serializer = UserUpdateSerializer(user,request.data)
+    def delete(self,request):
+        
+        # evento = self.get_object(pk)
+        # print(evento)
+        # evento.delete()
 
-#         if serializer.is_valid(raise_exception=True):
-#             serializer.save()
-#             return Response(serializer.data)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        id_evento = request.query_params['id_evento'] 
+        print(id_evento)
+        evento = Evento.objects.filter(idEvento = id_evento)
+        print(evento)
+        evento.delete()
+        return Response('Evento con id {id_evento} eliminado')     
     
