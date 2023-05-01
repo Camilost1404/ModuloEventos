@@ -66,6 +66,7 @@ class Administrativo(models.Model):
         db_table = 'administrativo'  # Nombre de la tabla en la base de datos
 
 
+
 class Evento(models.Model):
     # Modelo para el evento
 

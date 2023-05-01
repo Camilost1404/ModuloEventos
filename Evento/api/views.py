@@ -8,7 +8,7 @@ from django.db import transaction
 from Evento.models import Programa, ProgramaEvento, Evento
 
 # Importación de serializers
-from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer, EventoStateSerializer
+from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer, EventoStateSerializer, EventoUpdateSerializer
 
 
 @transaction.atomic
@@ -188,4 +188,25 @@ class ChangeStateEvento(APIView):
             serializer.save()
             return Response(status=status.HTTP_200_OK)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class eliminarEvento(APIView):
+
+    def delete(self, request):
+
+        id_evento = request.query_params['id_evento']
+        evento = Evento.objects.filter(idEvento=id_evento)
+        evento.delete()
+        return Response('Evento con id {id_evento} eliminado')
+
+
+class modificarEvento(APIView):
+    def put(self, request):
+        id_evento = request.query_params['id_evento']
+        evento = Evento.objects.get(idEvento=id_evento)
+        serializer = EventoUpdateSerializer(evento, request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

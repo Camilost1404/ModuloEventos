@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
-from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer, ActividadStateSerializer
+from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer, ActividadStateSerializer, ActividadUpdateSerializer
 from Actividad.models import Actividad, Dia, ActividadDia
 from Evento.models import Administrativo
 from django.db import transaction
@@ -123,4 +123,27 @@ class ChangeStateActividad(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class actividadFilterLugar(APIView):
+
+    def get(self, request):
+
+        lugar1 = request.query_params['lugar1']
+        actividad = Actividad.objects.filter(lugar=lugar1)
+        serializer = ActividadViewSerializer(actividad, many=True)
+
+        return Response(serializer.data)
+
+
+class actividadUpdate(APIView):
+    def put(self, request):
+        id_actividad = request.query_params['id_actividad']
+        actividad = Actividad.objects.get(idActividad=id_actividad)
+        serializer = ActividadUpdateSerializer(actividad, request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

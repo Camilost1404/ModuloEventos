@@ -1,5 +1,5 @@
 from django.urls import path
-from Evento.api.views import EventoView, EventoFilterEstado, EventoFilterId, EventoFilterFecha, EventoCreateView, AsistenciaEventoView, ChangeStateEvento
+from Evento.api.views import EventoView, EventoFilterEstado, EventoFilterId, EventoFilterFecha, EventoCreateView, AsistenciaEventoView, ChangeStateEvento, eliminarEvento, modificarEvento
 
 urlpatterns = [
     path('eventos', EventoView.as_view()),
@@ -9,4 +9,6 @@ urlpatterns = [
     path('eventos/<int:pk>', EventoFilterId.as_view()),
     path('eventos/<int:id>/set_estado', ChangeStateEvento.as_view()),
     path('eventos/asistencia_evento', AsistenciaEventoView.as_view()),
+    path('eliminar_evento/', eliminarEvento.as_view()),
+    path('modificar_evento/',modificarEvento.as_view())
 ]
