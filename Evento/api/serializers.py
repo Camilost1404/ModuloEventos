@@ -11,4 +11,8 @@ class EventoFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evento
         fields = ['idEvento','Administrativo_idAdministrativo','nombre_evento','descripcion','fecha_inicio','fecha_final','estado','correccion']
-                
+
+class EventoUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evento
+        fields = ['nombre_evento','descripcion','fecha_inicio','fecha_final']                

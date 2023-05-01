@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
-from Evento.api.serializers import EventoViewSerializer, EventoFilterSerializer
+from Evento.api.serializers import EventoViewSerializer, EventoFilterSerializer, EventoUpdateSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from Evento.models import Evento
-
+from rest_framework import status
 
 class EventoView(APIView):
     http_method_names=['get']
@@ -70,4 +70,16 @@ class eliminarEvento(APIView):
         print(evento)
         evento.delete()
         return Response('Evento con id {id_evento} eliminado')     
+
+
+class modificarEvento(APIView):
+    def update(self,request):
+        evento = Evento.objects.get(id=request.user.id)
+        serializer = EventoUpdateSerializer(evento,request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
