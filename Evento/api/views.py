@@ -64,10 +64,6 @@ class eliminarEvento(APIView):
 
     def delete(self,request):
         
-        # evento = self.get_object(pk)
-        # print(evento)
-        # evento.delete()
-
         id_evento = request.query_params['id_evento'] 
         print(id_evento)
         evento = Evento.objects.filter(idEvento = id_evento)
