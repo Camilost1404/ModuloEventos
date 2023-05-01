@@ -21,3 +21,8 @@ class ProgramaxEventoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProgramaEvento
         fields = ['Evento_idEvento','Programa_idPrograma']
+
+class eventoEstadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Evento
+        fields =['estado','correccion']

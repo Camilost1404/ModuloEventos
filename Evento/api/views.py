@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from Evento.api.serializers import EventoViewSerializer, EventoFilterSerializer, EventoUpdateSerializer
+from Evento.api.serializers import EventoViewSerializer, EventoFilterSerializer, EventoUpdateSerializer, eventoEstadoSerializer
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from Evento.models import Evento, ProgramaEvento, Programa
@@ -79,6 +79,30 @@ class modificarEvento(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
-    
+
+class aprobarEvento(APIView):
+   def put(self,request):
+      id_evento = request.query_params['id_evento']
+      estado = request.query_params['estado']
+      if estado =='Aprobado':
+         estado ={'estado': estado}
+         evento = Evento.objects.get(idEvento=id_evento)
+         correccion ={'correccion': None}
+         serializer = eventoEstadoSerializer(evento,data=estado)
+         serializer2 = eventoEstadoSerializer(evento,data=correccion)
+         if serializer.is_valid(raise_exception=True) and serializer2.is_valid(raise_exception=True):
+              serializer.save()
+              serializer2.save()
+              return Response(serializer.data)
+      elif estado =='No Aprobado':
+         estado ={'estado': estado}
+         evento = Evento.objects.get(idEvento=id_evento)
+         serializer = eventoEstadoSerializer(evento,data=estado)
+         serializer2= eventoEstadoSerializer(evento,request.data)
+         if serializer.is_valid(raise_exception=True) and serializer2.is_valid(raise_exception=True):
+              serializer.save()
+              serializer2.save()
+              return Response(serializer.data)
+
+      return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
