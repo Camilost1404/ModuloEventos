@@ -3,6 +3,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer, ActividadStateSerializer
 from Actividad.models import Actividad, Dia, ActividadDia
+from Evento.models import Administrativo
 from django.db import transaction
 
 
@@ -55,6 +56,11 @@ class ActividadCreateView(APIView):
         Vista para crear un nuevo actividad.
         Recibe un objeto JSON con los datos del actividad a crear.
         """
+
+        administrativo = Administrativo.objects.filter(
+            codigo=request.data['encargado_id']).values('idAdministrativo').first()
+
+        request.data['Administrativo_idAdministrativo'] = administrativo['idAdministrativo']
 
         # Validamos los datos recibidos en el serializer correspondiente
         serializer = ActividadCreateSerializer(data=request.data)
@@ -115,6 +121,6 @@ class ChangeStateActividad(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

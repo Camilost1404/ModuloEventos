@@ -11,9 +11,17 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Creamos una instancia de la clase Env para gestionar las variables de entorno
+env = environ.Env()
+
+# Cargamos las variables de entorno desde el archivo .env
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -83,9 +91,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'bienestar-db',
-        'USER': 'userBienestar',
-        'PASSWORD': 'Bienestar123.',
-        'HOST': 'bienestar-db.mysql.database.azure.com',
+        'USER': 'root',
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }

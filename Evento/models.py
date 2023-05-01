@@ -24,7 +24,7 @@ class Perfil(models.Model):
     Rol_idRol = models.ForeignKey(Rol, on_delete=models.CASCADE, db_column='Rol_idRol')
     usuario = models.CharField(max_length=80)
     correo = models.CharField(max_length=80)
-    contraseña = models.CharField(max_length=45)
+    contraseña = models.CharField(max_length=245)
     # tipo_documento = models.CharField(max_length=45)
     documento = models.CharField(max_length=20)
 
