@@ -28,3 +28,25 @@ class Actividad(models.Model):
         db_table = "actividad"
 
 
+class Dia(models.Model):
+
+    idDia = models.AutoField(primary_key=True)
+    dia = models.CharField(max_length=45)
+
+    class Meta:
+        # Atributos para la configuración del modelo
+        managed = False  # No se maneja la tabla mediante Django
+        db_table = "dia"  # Nombre de la tabla en la base de datos
+
+
+class ActividadDia(models.Model):
+    id = models.AutoField(primary_key=True)
+    dia_idDia = models.ForeignKey(Dia, on_delete=models.CASCADE, db_column='dia_idDia')
+    Actividad_idActividad = models.ForeignKey(Actividad, on_delete=models.CASCADE, db_column='Actividad_idActividad')
+    hora_inicio = models.CharField(max_length=45)
+    hora_fin = models.CharField(max_length=45)
+
+    class Meta:
+        # Atributos para la configuración del modelo
+        managed = False  # No se maneja la tabla mediante Django
+        db_table = "actividaddia"  # Nombre de la tabla en la base de datos

@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from Actividad.api.serializer import ActividadViewSerializer, ActividadUpdateSerializer
-from Actividad.models import Actividad
+from Actividad.api.serializers import ActividadViewSerializer, ActividadUpdateSerializer,ActividadDiaSerializer
+from Actividad.models import Actividad, ActividadDia
 from rest_framework import status
+from django.db import transaction
 
 
 class actividadView(APIView):
@@ -35,12 +36,23 @@ class actividadFilterLugar(APIView):
         return Response(serializer.data)
 
 class actividadUpdate(APIView):
+    @transaction.atomic
     def put(self,request):
-       id_actividad = request.query_params['id_actividad']
+       id_actividad = request.query_params['id_actividad'] 
        actividad = Actividad.objects.get(idActividad=id_actividad)
-       serializer = ActividadUpdateSerializer(actividad,request.data)
-
+       serializer = ActividadUpdateSerializer(actividad,data=request.data)
        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)          
+    
+class DiaUpdate(APIView):
+    @transaction.atomic
+    def put(self,request):
+       id_dia = request.query_params['id_dia'] 
+       act_dia = ActividadDia.objects.get(id=id_dia)
+       serializer = ActividadDiaSerializer(act_dia,data=request.data)
+       if serializer.is_valid(raise_exception=True):
+        serializer.save()
+        return Response(status=status.HTTP_200_OK)
+       return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
