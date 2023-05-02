@@ -56,7 +56,6 @@ class EventoViewSerializer(serializers.ModelSerializer):
 
 # Serializador para filtrar eventos
 
-
 class EventoFilterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evento
@@ -70,7 +69,6 @@ class EventoFilterSerializer(serializers.ModelSerializer):
             'estado',
             'correccion'
         ]
-
 
 class AsistenciaEventoSerializer(serializers.ModelSerializer):
 
@@ -134,7 +132,8 @@ class EventoStateSerializer(serializers.ModelSerializer):
 class EventoUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Evento
-        fields = ['nombre_evento', 'descripcion', 'fecha_inicio', 'fecha_final']
+        fields = ['nombre_evento', 'descripcion',
+                  'fecha_inicio', 'fecha_final']
 
 
 class ProgramaxEventoSerializer(serializers.ModelSerializer):

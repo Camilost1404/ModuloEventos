@@ -151,7 +151,11 @@ class EventoFilterId(RetrieveAPIView):
         """
         evento = self.get_object()
         serializer = self.get_serializer(evento)
-        return Response(serializer.data)
+        data = serializer.data
+        programas = evento.programaevento_set.all().values_list(
+            'Programa_idPrograma__nombre_programa', flat=True)
+        data['programas'] = programas
+        return Response(data)
 
 
 class AsistenciaEventoView(APIView):
