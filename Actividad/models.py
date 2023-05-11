@@ -1,4 +1,5 @@
 from django.db import models
+from Evento.models import Estudiante
 
 class Administrativo(models.Model):
     idAdministrativo = models.AutoField(primary_key=True)
@@ -50,3 +51,11 @@ class ActividadDia(models.Model):
         # Atributos para la configuración del modelo
         managed = False  # No se maneja la tabla mediante Django
         db_table = "actividaddia"  # Nombre de la tabla en la base de datos
+
+class AsistenciaActividad(models.Model):
+    idasistencia = models.AutoField(primary_key=True)
+    Actividad_idActividad = models.ForeignKey(Actividad, on_delete=models.CASCADE)
+    Estudiante_idEstudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    horas_registradas = models.IntegerField()
+    fecha = models.DateTimeField(auto_now_add=True)
+

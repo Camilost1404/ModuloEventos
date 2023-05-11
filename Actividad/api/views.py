@@ -1,6 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from Actividad.api.serializers import ActividadViewSerializer, ActividadUpdateSerializer,ActividadDiaSerializer
+from Actividad.api.serializers import ActividadViewSerializer, ActividadUpdateSerializer,ActividadDiaSerializer, AsistenciaActividadSerializer
 from Actividad.models import Actividad, ActividadDia
 from rest_framework import status
 from django.db import transaction
@@ -56,3 +56,18 @@ class DiaUpdate(APIView):
         serializer.save()
         return Response(status=status.HTTP_200_OK)
        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
+
+
+class AsistenciaActividadView(APIView):
+
+    @transaction.atomic
+    def post(self, request):
+
+        serializer = AsistenciaActividadSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
