@@ -1,9 +1,15 @@
 from rest_framework import serializers
-from Actividad.models import Actividad, Dia
+from Actividad.models import Actividad, Dia, ActividadDia
 
+
+class ActividadDiaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ActividadDia
+        fields = '__all__'
 
 class ActividadViewSerializer(serializers.ModelSerializer):
 
+    actividaddia_set = ActividadDiaSerializer(many=True)
     class Meta:
 
         model = Actividad

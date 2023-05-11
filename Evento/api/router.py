@@ -10,5 +10,5 @@ urlpatterns = [
     path('eventos/<int:id>/set_estado', ChangeStateEvento.as_view()),
     path('eventos/asistencia_evento', AsistenciaEventoView.as_view()),
     path('eliminar_evento/', eliminarEvento.as_view()),
-    path('modificar_evento/',modificarEvento.as_view())
+    path('modificar_evento',modificarEvento.as_view())
 ]
