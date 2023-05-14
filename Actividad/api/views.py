@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
-from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer, ActividadStateSerializer, ActividadUpdateSerializer
+from Actividad.api.serializers import ActividadViewSerializer, ActividadCreateSerializer, DiaSerializer, ActividadStateSerializer, ActividadUpdateSerializer, AsistenciaActividadSerializer, ActividadFilterSerializer
 from Actividad.models import Actividad, Dia, ActividadDia
 from Evento.models import Administrativo
 from django.db import transaction
@@ -32,7 +32,8 @@ def create_actividad_dia(programacion, actividad):
 class ActividadView(APIView):
 
     def get(self, request):
-        actividad = Actividad.objects.prefetch_related('actividaddia_set').all()
+        actividad = Actividad.objects.prefetch_related(
+            'actividaddia_set').all()
         serializer = ActividadViewSerializer(actividad, many=True)
 
         return Response(serializer.data)
@@ -149,23 +150,34 @@ class actividadUpdate(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class EventoFilterId(RetrieveAPIView):
-#     """
-#     Vista para obtener un evento en particular por su ID.
-#     """
 
-#     queryset = Actividad.objects.all()
-#     serializer_class = EventoFilterSerializer
+class AsistenciaActividadView(APIView):
 
-#     def retrieve(self, request, *args, **kwargs):
-#         """
-#         Método GET que recibe el ID del evento a obtener.
-#         Retorna el evento con el ID indicado, serializado.
-#         """
-#         evento = self.get_object()
-#         serializer = self.get_serializer(evento)
-#         data = serializer.data
-#         programas = evento.programaevento_set.all().values_list(
-#             'Programa_idPrograma__nombre_programa', flat=True)
-#         data['programas'] = programas
-#         return Response(data)
+    @transaction.atomic
+    def post(self, request):
+
+        serializer = AsistenciaActividadSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ActividadFilterId(RetrieveAPIView):
+    """
+    Vista para obtener un evento en particular por su ID.
+    """
+
+    queryset = Actividad.objects.all()
+    serializer_class = ActividadFilterSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Método GET que recibe el ID del evento a obtener.
+        Retorna el evento con el ID indicado, serializado.
+        """
+        actividad = self.get_object()
+        serializer = self.get_serializer(actividad)
+        data = serializer.data
+        return Response(data)
