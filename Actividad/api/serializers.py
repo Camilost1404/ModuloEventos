@@ -52,8 +52,7 @@ class ActividadCreateSerializer(serializers.ModelSerializer):
 class ActividadUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Actividad
-        fields = ['nombre', 'Administrativo_idAdministrativo',
-                  'descripcion', 'lugar']
+        fields = ['nombre', 'descripcion', 'lugar']
 
 
 class AsistenciaActividadSerializer(serializers.ModelSerializer):

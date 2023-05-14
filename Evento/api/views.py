@@ -8,7 +8,7 @@ from django.db import transaction
 from Evento.models import Programa, ProgramaEvento, Evento
 
 # Importación de serializers
-from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer, EventoStateSerializer, EventoUpdateSerializer
+from Evento.api.serializers import EventoCreateSerializer, ProgramaSerializer, EventoFilterSerializer, EventoViewSerializer, AsistenciaEventoSerializer, EventoStateSerializer, EventoUpdateSerializer, eventoEstadoSerializer
 
 
 @transaction.atomic
@@ -179,7 +179,6 @@ class ChangeStateEvento(APIView):
 
         evento = Evento.objects.get(idEvento=id)
 
-        # Si no se encuentra la actividad, se retorna un error 404
         if not evento:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -213,4 +212,31 @@ class modificarEvento(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class aprobarEvento(APIView):
+    def put(self, request):
+        id_evento = request.query_params['id_evento']
+        estado = request.query_params['estado']
+        if estado == 'Aprobado':
+            estado = {'estado': estado}
+            evento = Evento.objects.get(idEvento=id_evento)
+            correccion = {'correccion': None}
+            serializer = eventoEstadoSerializer(evento, data=estado)
+            serializer2 = eventoEstadoSerializer(evento, data=correccion)
+            if serializer.is_valid(raise_exception=True) and serializer2.is_valid(raise_exception=True):
+                serializer.save()
+                serializer2.save()
+                return Response(serializer.data)
+        elif estado == 'No Aprobado':
+            estado = {'estado': estado}
+            evento = Evento.objects.get(idEvento=id_evento)
+            serializer = eventoEstadoSerializer(evento, data=estado)
+            serializer2 = eventoEstadoSerializer(evento, request.data)
+            if serializer.is_valid(raise_exception=True) and serializer2.is_valid(raise_exception=True):
+                serializer.save()
+                serializer2.save()
+                return Response(serializer.data)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
